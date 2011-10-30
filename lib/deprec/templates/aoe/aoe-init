@@ -1,6 +1,6 @@
 #! /bin/sh
 # aoe-init - example init script for ATA over Ethernet storage
-# 
+#
 #   Edit this script for your purposes.  (Changing "eth1" to the
 #   appropriate interface name, adding commands, etc.)  You might
 #   need to tune the sleep times.

@@ -6,27 +6,27 @@
 ###############################################################################
 ###############################################################################
 
-define service{ 
-	use generic-service 
-	hostgroup_name servers 
-	service_description Swap 
+define service{
+	use generic-service
+	hostgroup_name servers
+	service_description Swap
 	servicegroups memory
-	check_command check_nrpe!check_swap 
+	check_command check_nrpe!check_swap
 }
 
-define service{ 
-	use generic-service 
-	hostgroup_name servers 
-	service_description CPU 
-	check_command check_nrpe!check_load 
-} 
+define service{
+	use generic-service
+	hostgroup_name servers
+	service_description CPU
+	check_command check_nrpe!check_load
+}
 
-define service{ 
-	use generic-service 
-	hostgroup_name servers 
+define service{
+	use generic-service
+	hostgroup_name servers
 	servicegroups disk
-	service_description Disk 
-	check_command check_nrpe!check_sda1 
+	service_description Disk
+	check_command check_nrpe!check_sda1
 }
 
 ###############################################################################
@@ -75,5 +75,5 @@ define service{
 	        retry_check_interval            1			; Re-check the service every minute until a hard state can be determined
 	        register                        0       		; DONT REGISTER THIS DEFINITION - ITS NOT A REAL SERVICE, JUST A TEMPLATE!
 		}
-			
+
 

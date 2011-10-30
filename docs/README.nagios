@@ -5,7 +5,7 @@ deprec: Install and configure Nagios on Ubuntu 7.10 (gutsy)
 
 	# You need the following item defined in config/deploy.rb (or ~/.caprc)
 	role :nagios, 'monitor.blah.com'
-		
+
 	# Run the following on your workstation
 	export HOSTS=nagios.domain.name # replace with desired domain
 	cap deprec:apache:install

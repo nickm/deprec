@@ -1,22 +1,22 @@
 # Copyright 2006-2008 by Mike Bailey. All rights reserved.
-Capistrano::Configuration.instance(:must_exist).load do 
+Capistrano::Configuration.instance(:must_exist).load do
   namespace :deprec do
     namespace :apache do
-      
+
       # put apache config for site in shared/config/apache2 dir
-      # link it into apps to enable, unlink to disable? 
+      # link it into apps to enable, unlink to disable?
       # http://times.usefulinc.com/2006/09/15-rails-debian-apache
-      
+
       # XXX Check this over after a nice sleep
       #
       # def set_apache_conf
       #   if apache_default_vhost
       #     set :apache_conf, "/usr/local/apache2/conf/default.conf" unless apache_default_vhost_conf
-      #   else 
+      #   else
       #     set :apache_conf, "/usr/local/apache2/conf/apps/#{application}.conf" unless apache_conf
       #   end
       # end
-        
+
       set(:apache_server_name) { domain }
       set :apache_user, 'daemon' # XXX this is not yet being inserted into httpd.conf!
                                  # I've added it for deprec:nagios:install
@@ -35,21 +35,21 @@ Capistrano::Configuration.instance(:must_exist).load do
       set :apache_docroot, '/usr/local/apache2/htdocs'
       set :apache_vhost_dir, '/usr/local/apache2/conf/apps'
       set :apache_config_file, '/usr/local/apache2/conf/httpd.conf'
-      
+
       SRC_PACKAGES[:apache] = {
-        :md5sum => "80d3754fc278338033296f0d41ef2c04  httpd-2.2.9.tar.gz", 
+        :md5sum => "80d3754fc278338033296f0d41ef2c04  httpd-2.2.9.tar.gz",
         :url => "http://www.apache.org/dist/httpd/httpd-2.2.9.tar.gz",
         :configure => %w(
           ./configure
           --enable-mods-shared=all
-          --enable-proxy 
-          --enable-proxy-balancer 
-          --enable-proxy-http 
-          --enable-rewrite  
-          --enable-cache 
-          --enable-headers 
-          --enable-ssl 
-          --enable-deflate 
+          --enable-proxy
+          --enable-proxy-balancer
+          --enable-proxy-http
+          --enable-rewrite
+          --enable-cache
+          --enable-headers
+          --enable-ssl
+          --enable-deflate
           --with-included-apr   #_so_this_recipe_doesn't_break_when_rerun
           --enable-dav          #_for_subversion_
           --enable-so           #_for_subversion_
@@ -58,7 +58,7 @@ Capistrano::Configuration.instance(:must_exist).load do
         :make => 'make;',
         :post_install => 'install -b support/apachectl /etc/init.d/httpd;'
       }
-      
+
       desc "Install apache"
       task :install do
         install_deps
@@ -71,25 +71,25 @@ Capistrano::Configuration.instance(:must_exist).load do
           deprec2.render_template(:apache, file.merge(:remote => true))
         end
       end
-      
+
       # install dependencies for apache
       task :install_deps do
         apt.install( {:base => %w(zlib1g-dev zlib1g openssl libssl-dev)}, :stable )
       end
-      
+
       # Create dir for vhost config files
       task :setup_vhost_dir do
         deprec2.mkdir(apache_vhost_dir, :owner => 'root', :group => group, :mode => 0775, :via => :sudo)
         deprec2.append_to_file_if_missing(apache_config_file, 'Include conf/apps/')
       end
-      
+
       SYSTEM_CONFIG_FILES[:apache] = [
         # They're generated and put in place during install
         # I may put them in here at some point
       ]
 
       PROJECT_CONFIG_FILES[:apache] = [
-        
+
         {:template => "httpd-vhost-app.conf.erb",
          :path => 'conf/httpd-vhost-app.conf',
          :mode => 0755,
@@ -113,7 +113,7 @@ Capistrano::Configuration.instance(:must_exist).load do
           deprec2.render_template(:apache, file)
         end
       end
-      
+
       desc "Push apache config files to server"
       task :config, :roles => :web do
         config_system
@@ -126,7 +126,7 @@ Capistrano::Configuration.instance(:must_exist).load do
 
       task :config_project, :roles => :web do
         deprec2.push_configs(:apache, PROJECT_CONFIG_FILES[:apache])
-        sudo "ln -sf #{deploy_to}/apache/conf/httpd-vhost-app.conf /usr/local/apache2/conf/apps/#{application}.conf"        
+        sudo "ln -sf #{deploy_to}/apache/conf/httpd-vhost-app.conf /usr/local/apache2/conf/apps/#{application}.conf"
       end
 
       desc "Start Apache"
@@ -153,27 +153,27 @@ Capistrano::Configuration.instance(:must_exist).load do
       task :activate do
         send(run_method, "update-rc.d httpd defaults")
       end
-      
+
       desc "Set apache to not start on boot"
       task :deactivate, :roles => :web do
         send(run_method, "update-rc.d -f httpd remove")
       end
-      
+
       task :backup, :roles => :web do
         # not yet implemented
       end
-      
+
       task :restore, :roles => :web do
         # not yet implemented
       end
 
-      # Generate an index.html page  
+      # Generate an index.html page
       task :install_index_page do
         deprec2.mkdir(apache_docroot, :owner => :root, :group => :deploy, :mode => 0775, :via => :sudo)
         std.su_put deprec2.render_template(:apache, :template => 'index.html.erb'), File.join(apache_docroot, 'index.html')
         std.su_put deprec2.render_template(:apache, :template => 'master.css'), File.join(apache_docroot, 'master.css')
       end
-      
+
     end
   end
 end

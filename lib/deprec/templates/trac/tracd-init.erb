@@ -21,7 +21,7 @@ Usage: $0 {start|stop}
 case "$1" in
   start)
 		echo "Starting tracd"
-        for dir in `ls $trac_parent_dir`; do 
+        for dir in `ls $trac_parent_dir`; do
 			project="`basename $dir`"
 			passwords="$trac_parent_dir/${dir}/conf/users.htdigest"
 			auth_string="$auth_string --auth=${project},${passwords},${project}"
@@ -33,11 +33,11 @@ case "$1" in
 		;;
 
   stop)
-        echo "Stopping tracd" 
+        echo "Stopping tracd"
         kill `cat $trac_pidfile` >/dev/null 2>&1
         rm -f $trac_pidfile
         ;;
-                
+
   *)
         usage
 esac

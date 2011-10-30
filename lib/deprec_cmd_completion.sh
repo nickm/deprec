@@ -1,5 +1,5 @@
 export CAP_TASKS=$( cap -T | grep '^cap' | cut -d' ' -f 2 )
-_cap() 
+_cap()
 {
 	local cur tasks colonprefixes
 	COMPREPLY=()

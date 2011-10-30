@@ -9,6 +9,6 @@
 	postrotate
 		for i in `ls /data/<%= @username %>/shared/log/*.pid`; do
 			kill -USR2 `cat $i`
-		done      
+		done
 	endscript
 }

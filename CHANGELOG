@@ -1,21 +1,21 @@
 == git
- 
+
 * Restricted tasks to roles. [mbailey]
   http://github.com/mbailey/deprec/commit/d103dda7ee3f7696007d230c76c7739dd57115ec
 
 == 1.99.27 (August 27, 2008)
 
-* Bugfix: Add configure and make options to src_package for rubygems to 
+* Bugfix: Add configure and make options to src_package for rubygems to
   override defaults. [jasherai]
 
-* Change: We now setup postfix as a satellite mail server. This is designed 
+* Change: We now setup postfix as a satellite mail server. This is designed
   to listen only on the local network interface and non-local mail to a relay
   host. [mbailey]
 
 == 1.99.26 (August 22, 2008)
 
 * added vnstat recipes - measure and report traffic on interface counters [mbailey]
-* upgrade ruby to 1.8.6-p287 [Isaac Kearse] 
+* upgrade ruby to 1.8.6-p287 [Isaac Kearse]
 * upgrade to rubygems 1.2.0 - addresses memory utilization issues on
   low-memory boxes (half-gig or less) [thewoolleyman]
 * deprec:rails:install_stack now installs mysql  [mbailey]
@@ -28,17 +28,17 @@
 * I've rejigged things to make it easier to install a service without having
   a local config directory. For example:
 
-  cap deprec:nginx:install HOSTS=192.168.0.10  
+  cap deprec:nginx:install HOSTS=192.168.0.10
 
-  This will download and compile nginx, and push out a config file without 
-  generating a local copy. You don't need a config/ dir and you don't need 
+  This will download and compile nginx, and push out a config file without
+  generating a local copy. You don't need a config/ dir and you don't need
   to have defined a :web role.
 
-  Meta-tasks (like deprec:rails:install_stack) can now pass a block of commands 
+  Meta-tasks (like deprec:rails:install_stack) can now pass a block of commands
   to with_roles(roles).
 
-  config_gen and config are still available but it's now possible to install 
-  a rails stack without generating any local files. 
+  config_gen and config are still available but it's now possible to install
+  a rails stack without generating any local files.
 
 == 1.99.21 (June 17, 2008)
 
@@ -53,7 +53,7 @@
 == 1.99.19 (June 3, 2008)
 
 * feature: added logrotate. configs generated for nginx and mongrel
-* bugfix: monit:install was calling monit:activate but this won't work will monit:config is called. 
+* bugfix: monit:install was calling monit:activate but this won't work will monit:config is called.
 
 == 1.99.18 (May  28, 2008)
 
@@ -66,7 +66,7 @@
 
 == 1.99.16 (May  5, 2008)
 
-* change: start mongrel using mongrel_cluster with --clean option so mongrel 
+* change: start mongrel using mongrel_cluster with --clean option so mongrel
   will start even when there are stale pids around.
 
 * bugfix: nginx vhost template now uses :mongrel_port instead of 8000
@@ -74,7 +74,7 @@
 
 == 1.99.15 (Mar 27, 2008)
 
-* moved vmbuilder_plugins out of deprec dir 
+* moved vmbuilder_plugins out of deprec dir
 
 == 1.99.14 (Feb 21, 2008)
 
@@ -108,16 +108,16 @@
 
 * feature: installs and configures monit to manage your mongrel processes [Mike Bailey]
 
-* feature: When running config_gen,  if deprec discovers a file exists, checks 
-           whether the new file differs from the existing one. If they're 
+* feature: When running config_gen,  if deprec discovers a file exists, checks
+           whether the new file differs from the existing one. If they're
            identical, it skips it.
 
-		   If they differ, the user is presented with the options to overwrite 
-		   or not but now there's an extra option to view a diff of the changes 
+		   If they differ, the user is presented with the options to overwrite
+		   or not but now there's an extra option to view a diff of the changes
 		   that would occur. [Mike Bailey]
 
 * change:  handle_command_with_input now accepts an optional response parameter.
-           This is useful if you need to change a password on many servers and 
+           This is useful if you need to change a password on many servers and
            don't want to have to keep entering the password at the prompt for
            each box. [Mike Bailey]
 
@@ -161,9 +161,9 @@ Massive changes in preparation for 2.0
 
 * bugfix: :set_perms_for_mongrel_dirs [Mike Bailey]
   - now don't fail if log files do not exist (e.g initial deployment)
-  - is called by :after_symlink task instead of :after_update 
-    this is because some tasks call :update_code without calling the 
-    :update task but in all of these cases :symlink is called 
+  - is called by :after_symlink task instead of :after_update
+    this is because some tasks call :update_code without calling the
+    :update task but in all of these cases :symlink is called
 
 * updated version from 1.4.x to 1.5.x due to pretty big change made
   in previous version (mongrel no longer running as root) [Mike Bailey]

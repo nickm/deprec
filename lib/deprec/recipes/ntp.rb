@@ -1,9 +1,9 @@
 # Copyright 2006-2008 by Mike Bailey. All rights reserved.
-Capistrano::Configuration.instance(:must_exist).load do 
-  namespace :deprec do 
+Capistrano::Configuration.instance(:must_exist).load do
+  namespace :deprec do
     namespace :ntp do
 
-      # Install      
+      # Install
 
       desc "Install ntp"
       task :install do
@@ -84,7 +84,7 @@ Capistrano::Configuration.instance(:must_exist).load do
         # there's nothing to store for ntp
       end
 
-    end 
+    end
   end
 end
 
@@ -99,5 +99,5 @@ end
 #
 
 # reconfigure timezone on hardy
-# 
+#
 # dpkg-reconfigure tzdata

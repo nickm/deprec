@@ -1,9 +1,9 @@
 # Copyright 2006-2008 by Mike Bailey. All rights reserved.
-Capistrano::Configuration.instance(:must_exist).load do 
-  namespace :deprec do 
+Capistrano::Configuration.instance(:must_exist).load do
+  namespace :deprec do
     namespace :logrotate do
 
-      # Install      
+      # Install
 
       desc "Install logrotate"
       task :install do
@@ -42,13 +42,13 @@ Capistrano::Configuration.instance(:must_exist).load do
 
       # Control
       #
-      # logrotate is run via cron with a script in /etc/cron.daily/logrotate 
-      
+      # logrotate is run via cron with a script in /etc/cron.daily/logrotate
+
       desc "Force logrotate to run"
       task :force do
         sudo "logrotate -f /etc/logrotate.conf"
       end
 
-    end 
+    end
   end
 end

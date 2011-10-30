@@ -1,6 +1,6 @@
 # =gem.rb: Gem Installer library
 # Capistrano library to install and manage Ruby Gems.
-# 
+#
 # ----
 # Copyright (c) 2007 Neil Wilson, Aldur Systems Ltd
 #
@@ -15,7 +15,7 @@ require 'capistrano'
 # Installs within Capistrano as the plugin _gem_.
 #
 # =Usage
-#    
+#
 #    require 'vmbuilder_plugins/gem'
 #
 # Prefix all calls to the library with <tt>gem.</tt>
@@ -50,7 +50,7 @@ module Gem
   # specified.
   #
   # +packages+ can be a single string or an array of strings.
-  #  
+  #
   def install(packages, version=nil)
     send(run_method,"#{GEM_INSTALL} #{if version then '-v '+version.to_s end} #{packages.to_a.join(' ')}")
   end

@@ -35,9 +35,9 @@ monit_check_config () {
 }
 
 monit_check_perms () {
-    # Check the permission on configfile. 
+    # Check the permission on configfile.
     # The permission must not have more than -rwx------ (0700) permissions.
-   
+
     # Skip checking, fix perms instead.
     /bin/chmod go-rwx $CONFIG
 

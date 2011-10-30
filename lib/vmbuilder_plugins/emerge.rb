@@ -24,7 +24,7 @@ require 'capistrano'
 module Emerge
   # Default emerge command - reduce interactivity to the minimum
   EMERGE="emerge -q"
-  
+
   # Emerge a new package or packages
   def install(packages, options={})
     cmd = <<-CMD
@@ -32,7 +32,7 @@ module Emerge
     CMD
     sudo(cmd, options)
   end
-  
+
   # Run clean old/unused packages
   def clean(options={})
     cmd = <<-CMD
@@ -40,7 +40,7 @@ module Emerge
     CMD
     sudo(cmd, options)
   end
-  
+
   # Upgrade installed package list
   def upgrade(options={})
     cmd = <<-CMD
@@ -48,7 +48,7 @@ module Emerge
     CMD
     sudo(cmd, options)
   end
-  
+
   # Update portage
   def update_system(options={})
     cmd = <<-CMD
@@ -56,7 +56,7 @@ module Emerge
     CMD
     sudo(cmd, options)
   end
-  
+
   # Update all installed packages
   def update(options={})
     cmd = <<-CMD
@@ -64,7 +64,7 @@ module Emerge
     CMD
     sudo(cmd, options)
   end
-  
+
   # Boot script manipulation command
   def rc_update(packages, setting)
     packages.each do |service|

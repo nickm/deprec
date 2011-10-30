@@ -265,7 +265,7 @@ Now change the following lines to match your specifics:
 
 set :user, "deploy_user"
 set :application, "my_rails_project"
-set :repository, 
+set :repository,
 "svn+ssh://my_svn_useruser@my_svn/path_to/my_rails_project/trunk"  #or whatever
 set :domain, "my.slice.ip.address" #or domain name if you have that setup
 role :app, domain

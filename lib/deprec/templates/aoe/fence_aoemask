@@ -13,43 +13,43 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 # =======================================================================
 #
 # ~~~~~ REVISION HISTORY ~~~~~
-# 2007-08-17 - v1 - Brian Weck 
+# 2007-08-17 - v1 - Brian Weck
 #   Initial release.
 #
 # ~~~~~ OVERVIEW ~~~~~
-#  Initial mask settings on the AoE device should contain the set of all 
+#  Initial mask settings on the AoE device should contain the set of all
 #  MAC addresses using the AoE device from the cluster.
-#  
-#  When a fence operation occurs on a node, the fenced node's mac address is 
-#  removed from the mask list on the AoE device. This method is conceptually 
+#
+#  When a fence operation occurs on a node, the fenced node's mac address is
+#  removed from the mask list on the AoE device. This method is conceptually
 #  the same as fencing via a fabric switch.
-#  
-#  Once a node is fenced, the MAC address is removed from the mask list on 
+#
+#  Once a node is fenced, the MAC address is removed from the mask list on
 #  the AoE device. When the fenced node is ready to rejoin the cluster,
-#  the MAC address must be added to the device's mask list using this 
+#  the MAC address must be added to the device's mask list using this
 #  script or using aoemask.
 #
 #  Script returns 0 on SUCCESS and non-zero otherwise.
 #
 # ~~~~~ INSTALLATION ~~~~~
-#  Add this file as /sbin/fence_aoemask directory and ensure the file has 
-#  simliar permissions as the other fence_* agents. 
+#  Add this file as /sbin/fence_aoemask directory and ensure the file has
+#  simliar permissions as the other fence_* agents.
 #
 # ~~~~~ CONFIGURATION ~~~~~
-#  This software operates on a single shelf / slot at a time. In order to 
-#  fence multiple shelf and slots the user should create multiple fences. 
+#  This software operates on a single shelf / slot at a time. In order to
+#  fence multiple shelf and slots the user should create multiple fences.
 #
 #  e.g. a cluster.conf snippet.
 #  <clusternode name="node1-name" nodeid="1" votes="1">
@@ -73,10 +73,10 @@
 #     <fencedevice agent="fence_aoemask" name="fence-e0.1" shelf="0" slot="1" interface="eth1"/>
 #  </fencedevices>
 #
-# 
+#
 #  Command line options:
 #     see man aoemask.8
-# 
+#
 #  stdin options (passed from fenced):
 #     shelf=<num>                 |
 #     slot=<num>                  |
@@ -89,7 +89,7 @@
 #   [ spoof=<mac-addr> ]          | Spoof behavior is to assume success always.
 #   [ timeout=<wait-seconds> ]    |
 #   [ verbose=<ignored-value> ]   | Option is used to increase logging of fence agent.
-# 
+#
 
 # Define where you aoemask binary lives if it is not in the path.
 my $aoemask_prog="/usr/local/sbin/aoemask";
@@ -142,7 +142,7 @@ sub fail_usage
 
 #
 # If running command line, pass args as specified directly to aoemask
-if (@ARGV > 0) 
+if (@ARGV > 0)
 {
    # Check for min number of args, 5
    if( @ARGV < 5 )
@@ -152,7 +152,7 @@ if (@ARGV > 0)
    else
    {
       # stub in the args
-      foreach $i (0 .. $#ARGV) 
+      foreach $i (0 .. $#ARGV)
       {
         $aoemask .= " $ARGV[$i]";
       }
@@ -202,10 +202,10 @@ open(FH, "$aoemask 2>&1 |");
 close FH;
 
 #
-if ($opt_verbose) 
-{ 
+if ($opt_verbose)
+{
    _log "-- begin read response --\n";
-   foreach $line (@lines) { chop $line; _log "$line\n"; } 
+   foreach $line (@lines) { chop $line; _log "$line\n"; }
    _log "--  end  read response --\n";
 }
 
@@ -278,7 +278,7 @@ sub read_stdin_as_options()
         ($name,$val)=split /\s*=\s*/, $opt;
 
         if ( $name eq "" )
-        {  
+        {
            _log "parse error: illegal name in option $line\n";
            exit_fail();
         }
@@ -288,28 +288,28 @@ sub read_stdin_as_options()
         # interface=<if-name>
         # mac=<mac-addr>
         # action=(disable|enable)
-        elsif ($name eq "shelf" ) 
+        elsif ($name eq "shelf" )
         {
             $opt_shelf = $val;
-        } 
-        elsif ($name eq "slot" ) 
+        }
+        elsif ($name eq "slot" )
         {
             $opt_slot = $val;
-        } 
+        }
         elsif ($name eq "interface" )
         {
             $opt_interface = $val;
         }
-        elsif ($name eq "mac" ) 
+        elsif ($name eq "mac" )
         {
             $opt_mac = $val;
-            # pull out any ':' if configured as such. 
+            # pull out any ':' if configured as such.
             # (even though aoemask can handle it)
             $opt_mac =~ s/://g;
             # uppercase the alphas
             $opt_mac =~ tr/a-z/A-Z/;
-        } 
-        elsif ($name eq "action") 
+        }
+        elsif ($name eq "action")
         {
             $opt_action = $val;
         }
@@ -319,33 +319,33 @@ sub read_stdin_as_options()
         # list=<ignored-value>
         # spoof=<mac-addr>
         # timeout=<wait-seconds>
-        elsif ($name eq "debug" ) 
+        elsif ($name eq "debug" )
         {
             $opt_debug = 1;
-        } 
-        elsif ($name eq "exclusive" ) 
+        }
+        elsif ($name eq "exclusive" )
         {
             $opt_exclusive = 1;
-        } 
-        elsif ($name eq "list" ) 
+        }
+        elsif ($name eq "list" )
         {
             $opt_list = 1;
             $opt_user_says_list = 1;
-        } 
-        elsif ($name eq "spoof" ) 
+        }
+        elsif ($name eq "spoof" )
         {
             $opt_spoof = $val;
-        } 
-        elsif ($name eq "timeout" ) 
+        }
+        elsif ($name eq "timeout" )
         {
             $opt_timeout = $val;
-        } 
+        }
 
         # verbose=<ignored-value>
-        elsif ($name eq "verbose" ) 
+        elsif ($name eq "verbose" )
         {
             $opt_verbose = 1;
-        } 
+        }
     }
 }
 

@@ -7,7 +7,7 @@
 # chkconfig: - 85 15
 # description: mongrel_cluster manages multiple Mongrel processes for use \
 #              behind a load balancer.
-#              
+#
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local:/usr/local/sbin:/usr/local/bin
 CONF_DIR=/etc/mongrel_cluster
@@ -49,6 +49,6 @@ case "$1" in
       echo "Usage: mongrel_cluster {start|stop|restart|status}"
       exit 1
   ;;
-esac      
+esac
 
 exit $RETVAL

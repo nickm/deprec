@@ -3,7 +3,7 @@ require 'capistrano'
 require 'fileutils'
 
 module Deprec2
-  
+
   # Temporarily modify ROLES if HOSTS not set
   # Capistrano's default behaviour is for HOSTS to override ROLES
   def for_roles(roles)
@@ -12,7 +12,7 @@ module Deprec2
     yield
     ENV['ROLES'] = old_roles.to_s unless ENV['HOSTS']
   end
-  
+
   # Temporarily ignore ROLES and HOSTS
   def ignoring_roles_and_hosts
     old_roles = ENV['ROLES']
@@ -23,11 +23,11 @@ module Deprec2
     ENV['ROLES'] = old_roles
     ENV['HOSTS'] = old_hosts
   end
-  
+
   DEPREC_TEMPLATES_BASE = File.join(File.dirname(__FILE__), 'templates')
 
-  # Render template (usually a config file) 
-  # 
+  # Render template (usually a config file)
+  #
   # Usually we render it to a file on the local filesystem.
   # This way, we keep a copy of the config file under source control.
   # We can make manual changes if required and push to new hosts.
@@ -46,14 +46,14 @@ module Deprec2
     remote = options[:remote] || false
     mode = options[:mode] || 0755
     owner = options[:owner] || nil
-  
+
     # replace this with a check for the file
     if ! template
       puts "render_template() requires a value for the template!"
-      return false 
+      return false
     end
-  
-    # If local copies of deprec templates exist they will be used 
+
+    # If local copies of deprec templates exist they will be used
     # If you don't specify the location with the local_template_dir option
     # it defaults to config/templates.
     # e.g. config/templates/nginx/nginx.conf.erb
@@ -66,15 +66,15 @@ module Deprec2
       template = ERB.new(IO.read(File.join(DEPREC_TEMPLATES_BASE, app.to_s, template)), nil, '-')
     end
     rendered_template = template.result(binding)
-  
-    if remote 
+
+    if remote
       # render to remote machine
       puts 'You need to specify a path to render the template to!' unless path
       exit unless path
       sudo "test -d #{File.dirname(path)} || sudo mkdir -p #{File.dirname(path)}"
       std.su_put rendered_template, path, '/tmp/', :mode => mode
       sudo "chown #{owner} #{path}" if defined?(owner)
-    elsif path 
+    elsif path
       # render to local file
       full_path = File.join('config', app.to_s, path)
       path_dir = File.dirname(full_path)
@@ -91,7 +91,7 @@ module Deprec2
       end
       FileUtils.mkdir_p "#{path_dir}" if ! File.directory?(path_dir)
       # added line above to make windows compatible
-      # system "mkdir -p #{path_dir}" if ! File.directory?(path_dir) 
+      # system "mkdir -p #{path_dir}" if ! File.directory?(path_dir)
       File.open(full_path, 'w'){|f| f.write rendered_template }
       puts "[done] #{full_path} written"
     else
@@ -99,24 +99,24 @@ module Deprec2
       return rendered_template
     end
   end
-  
+
   def overwrite?(full_path, rendered_template)
-    if defined?(overwrite_all)      
+    if defined?(overwrite_all)
       if overwrite_all == true
         return true
       else
         return false
       end
     end
-    
+
     # XXX add :always and :never later - not sure how to set persistent value from here
     # response = Capistrano::CLI.ui.ask "File exists. Overwrite? ([y]es, [n]o, [a]lways, n[e]ver)" do |q|
     puts
-    response = Capistrano::CLI.ui.ask "File exists (#{full_path}). 
+    response = Capistrano::CLI.ui.ask "File exists (#{full_path}).
     Overwrite? ([y]es, [n]o, [d]iff)" do |q|
       q.default = 'n'
     end
-    
+
     case response
     when 'y'
       return true
@@ -124,7 +124,7 @@ module Deprec2
       return false
     when 'd'
       require 'tempfile'
-      tf = Tempfile.new("deprec_diff") 
+      tf = Tempfile.new("deprec_diff")
       tf.puts(rendered_template)
       tf.close
       puts
@@ -133,13 +133,13 @@ module Deprec2
       system "diff -u #{full_path} #{tf.path} | less"
       puts
       overwrite?(full_path, rendered_template)
-    # XXX add :always and :never later - not sure how to set persistent value from here  
+    # XXX add :always and :never later - not sure how to set persistent value from here
     # when 'a'
     #   set :overwrite_all, true
     # when 'e'
     #   set :overwrite_all, false
     end
-    
+
   end
 
   def render_template_to_file(template_name, destination_file_name, templates_dir = DEPREC_TEMPLATES_BASE)
@@ -153,16 +153,16 @@ module Deprec2
     sudo "cp #{temporary_location} #{destination_file_name}"
     delete temporary_location
   end
-  
-  # Copy configs to server(s). Note there is no :pull task. No changes should 
+
+  # Copy configs to server(s). Note there is no :pull task. No changes should
   # be made to configs on the servers so why would you need to pull them back?
-  def push_configs(app, files)   
+  def push_configs(app, files)
     app = app.to_s
     files.each do |file|
       # If the file path is relative we will prepend a path to this projects
       # own config directory for this service.
       if file[:path][0,1] != '/'
-        full_remote_path = File.join(deploy_to, app, file[:path]) 
+        full_remote_path = File.join(deploy_to, app, file[:path])
       else
         full_remote_path = file[:path]
       end
@@ -184,7 +184,7 @@ module Deprec2
       sudo "chown #{file[:owner]} #{full_remote_path}"
     end
   end
-  
+
   def teardown_connections
     sessions.keys.each do |server|
          sessions[server].close
@@ -197,7 +197,7 @@ module Deprec2
     # XXX if options[:requires_sudo] and :use_sudo then use sudo
     sudo <<-END
     sh -c '
-    grep -F "#{value}" #{filename} > /dev/null 2>&1 || 
+    grep -F "#{value}" #{filename} > /dev/null 2>&1 ||
     echo "#{value}" >> #{filename}
     '
     END
@@ -210,7 +210,7 @@ module Deprec2
     switches += " --shell=#{options[:shell]} " if options[:shell]
     switches += ' --create-home ' unless options[:homedir] == false
     switches += " --gid #{options[:group]} " unless options[:group].nil?
-    invoke_command "grep '^#{user}:' /etc/passwd || sudo /usr/sbin/useradd #{switches} #{user}", 
+    invoke_command "grep '^#{user}:' /etc/passwd || sudo /usr/sbin/useradd #{switches} #{user}",
     :via => run_method
   end
 
@@ -240,16 +240,16 @@ module Deprec2
     groupadd(options[:group], :via => via) if options[:group]
     invoke_command "chgrp -R #{options[:group]} #{path}", :via => via if options[:group]
   end
-  
+
   def create_src_dir
     mkdir(src_dir, :mode => 0775, :group => group_src, :via => :sudo)
   end
-  
+
   # download source package if we don't already have it
   def download_src(src_package, src_dir)
     set_package_defaults(src_package)
     create_src_dir
-    # check if file exists and if we have an MD5 hash or bytecount to compare 
+    # check if file exists and if we have an MD5 hash or bytecount to compare
     # against if so, compare and decide if we need to download again
     if defined?(src_package[:md5sum])
       md5_clause = " && echo '#{src_package[:md5sum]}' | md5sum -c - "
@@ -270,15 +270,15 @@ module Deprec2
     test -d #{package_dir}.old && rm -fr #{package_dir}.old;
     test -d #{package_dir} && mv #{package_dir} #{package_dir}.old;
     #{src_package[:unpack]}
-    chgrp -R #{group} #{package_dir};  
+    chgrp -R #{group} #{package_dir};
     chmod -R g+w #{package_dir};
     '
     EOF
   end
-  
+
   def set_package_defaults(pkg)
-      pkg[:filename] ||= File.basename(pkg[:url])  
-      pkg[:dir] ||= pkg[:filename].sub(/(\.tgz|\.tar\.gz)/,'')  
+      pkg[:filename] ||= File.basename(pkg[:url])
+      pkg[:dir] ||= pkg[:filename].sub(/(\.tgz|\.tar\.gz)/,'')
       pkg[:unpack] ||= "tar zxf #{pkg[:filename]};"
       pkg[:configure] ||= './configure ;'
       pkg[:make] ||= 'make;'
@@ -355,20 +355,20 @@ module Deprec2
   # # Run a command using the root account.
   # #
   # # Some linux distros/VPS providers only give you a root login when you install.
-  # 
+  #
   # def run_as_root(shell_command)
   #   std.connect_as_root do |tempuser|
   #     run shell_command
   #   end
   # end
-  # 
+  #
   # ##
   # # Run a task using root account.
   # #
   # # Some linux distros/VPS providers only give you a root login when you install.
   # #
   # # tempuser: contains the value replaced by 'root' for the duration of this call
-  # 
+  #
   # def as_root()
   #   std.connect_as_root do |tempuser|
   #     yield tempuser
@@ -390,14 +390,14 @@ module Deprec2
       if data =~ input_query
         if response
           channel.send_data "#{response}\n"
-        else 
+        else
           response = ::Capistrano::CLI.password_prompt "#{data}"
           channel.send_data "#{response}\n"
         end
       end
     end
   end
-  
+
 end
 
 Capistrano.plugin :deprec2, Deprec2

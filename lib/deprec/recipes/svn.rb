@@ -4,14 +4,14 @@ require 'uri'
 
 # http://svnbook.red-bean.com/en/1.4/svn-book.html#svn.serverconfig.choosing.apache
 
-Capistrano::Configuration.instance(:must_exist).load do 
-  namespace :deprec do 
+Capistrano::Configuration.instance(:must_exist).load do
+  namespace :deprec do
     namespace :svn do
-  
+
       set :scm_group, 'scm'
-  
+
       # Extract svn attributes from :repository URL
-      # 
+      #
       # Two examples of :repository entries are:
       #
       #   set :repository, 'svn+ssh://scm.deprecated.org/var/svn/deprec/trunk'
@@ -19,21 +19,21 @@ Capistrano::Configuration.instance(:must_exist).load do
       #
       # This has only been tested with svn+ssh but file: should work.
       #
-      set (:svn_scheme) { URI.parse(repository).scheme }  
+      set (:svn_scheme) { URI.parse(repository).scheme }
       set (:svn_host)   { URI.parse(repository).host }
       set (:repos_path) { URI.parse(repository).path }
-      set (:repos_root) { 
-        URI.parse(repository).path.sub(/\/(trunk|tags|branches)$/, '') 
+      set (:repos_root) {
+        URI.parse(repository).path.sub(/\/(trunk|tags|branches)$/, '')
       }
-  
+
       # account name to perform actions on (such as granting access to an account)
-      # this is a hack to allow us to optionally pass a variable to tasks 
+      # this is a hack to allow us to optionally pass a variable to tasks
       set (:svn_account) do
         Capistrano::CLI.ui.ask 'account name'
       end
-  
+
       set(:svn_backup_dir) { File.join(backup_dir, 'svn') }
-  
+
       desc "Install Subversion"
       task :install do
         install_deps
@@ -42,28 +42,28 @@ Capistrano::Configuration.instance(:must_exist).load do
         # deprec2.download_src(src_package, src_dir)
         # deprec2.install_from_src(src_package, src_dir)
       end
-  
+
       desc "install dependencies for Subversion"
       task :install_deps do
         apt.install( {:base => %w(subversion)}, :stable )
         # XXX deprec1 - was building from source to get subversion-1.4.5 onto dapper. Compiled swig bindings for trac
         # apt.install( {:base => %w(build-essential wget libneon25 libneon25-dev swig python-dev libexpat1-dev)}, :stable )
       end
-  
+
       desc "grant a user access to svn repos"
       task :grant_user_access, :roles => :scm do
         # creates account, scm_group and adds account to group
         deprec2.useradd(svn_account)
-        deprec2.groupadd(scm_group) 
+        deprec2.groupadd(scm_group)
         deprec2.add_user_to_group(svn_account, scm_group)
       end
-  
+
       desc "Create subversion repository and import project into it"
-      task :setup, :roles => :scm do 
+      task :setup, :roles => :scm do
         create_repos
         import
       end
-  
+
       desc "Create a subversion repository"
       task :create_repos, :roles => :scm do
         set :svn_account, top.user
@@ -72,10 +72,10 @@ Capistrano::Configuration.instance(:must_exist).load do
         sudo "svnadmin verify #{repos_root} > /dev/null 2>&1 || sudo svnadmin create #{repos_root}"
         sudo "chmod -R g+w #{repos_root}"
       end
-  
+
       # Adapted from code in Bradley Taylors RailsMachine gem
       desc "Import project into subversion repository."
-      task :import, :roles => :scm do 
+      task :import, :roles => :scm do
         new_path = "../#{application}"
         tags = repository.sub("trunk", "tags")
         branches = repository.sub("trunk", "branches")
@@ -91,9 +91,9 @@ Capistrano::Configuration.instance(:must_exist).load do
         system "svn co #{repository} #{application}"
         Dir.chdir application
         remove_log_and_tmp
-        puts "Your repository is: #{repository}" 
+        puts "Your repository is: #{repository}"
       end
-  
+
       # Lifted from Bradley Taylors RailsMachine gem
       desc "remove and ignore log files and tmp from subversion"
       task :remove_log_and_tmp, :roles => :scm  do
@@ -116,19 +116,19 @@ Capistrano::Configuration.instance(:must_exist).load do
         puts "committing changes"
         system "svn commit -m 'Removed and ignored log files and tmp'"
       end
-  
+
       # desc "Cache svn name and password on the server. Useful for http-based repositories."
       task :cache_credentials do
         run_with_input "svn list #{repository}"
       end
-  
+
       desc "create backup of trac repository"
       task :backup, :roles => :scm do
         # http://svnbook.red-bean.com/nightly/en/svn.reposadmin.maint.html#svn.reposadmin.maint.backup
         # XXX do we need this? insane!
         # echo "REPOS_BASE=/var/svn" > ~/.svntoolsrc
         DATE=`date +%Y%m%d-%a`
-    
+
         timestamp = Time.now.strftime("%Y%m%d-%a")
         deprec2.mkdir(svn_backup_dir, :owner => :root, :group => :deploy, :mode => 0775, :via => :sudo)
         dest_dir = File.join(svn_backup_dir, "#{application}_#{timestamp}")
@@ -140,15 +140,15 @@ Capistrano::Configuration.instance(:must_exist).load do
         # tracd_stop
         # copy out backup
       end
-  
-  
+
+
       # XXX TODO
-      # desc "backup repository" 
+      # desc "backup repository"
       # task :svn_backup_respository, :roles => :scm do
       #   puts "read http://svnbook.red-bean.com/nightly/en/svn-book.html#svn.reposadmin.maint.backup"
       # end
 
-      end 
+      end
   end
 end
 
@@ -163,9 +163,9 @@ end
 
 #
 # XXX put password file into svn and command to push it
-# 
+#
 # # run svnserve
 # sudo -u svn svnserve --daemon --root /var/svn/deprec_svnserve_root
-# 
+#
 # # check it out now
 # svn co svn://scm.deprecated.org/deprec/trunk deprec

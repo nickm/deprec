@@ -1,6 +1,6 @@
 # Copyright 2006-2008 by Mike Bailey. All rights reserved.
-Capistrano::Configuration.instance(:must_exist).load do 
-  namespace :deprec do 
+Capistrano::Configuration.instance(:must_exist).load do
+  namespace :deprec do
     namespace :nginx do
 
       set :nginx_server_name, nil
@@ -66,7 +66,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       desc <<-DESC
       Generate nginx config from template. Note that this does not
       push the config to the server, it merely generates required
-      configuration files. These should be kept under source control.            
+      configuration files. These should be kept under source control.
       The can be pushed to the server with the :config task.
       DESC
       task :config_gen do
@@ -132,13 +132,13 @@ Capistrano::Configuration.instance(:must_exist).load do
       task :restore, :roles => :web do
         # there's nothing to store for nginx
       end
-      
+
       # Helper task to get rid of pesky "it works" page - not called by deprec tasks
       task :rename_index_page, :roles => :web do
         index_file = '/usr/local/nginx/html/index.html'
         sudo "test -f #{index_file} && sudo mv #{index_file} #{index_file}.orig || exit 0"
       end
 
-    end 
+    end
   end
 end

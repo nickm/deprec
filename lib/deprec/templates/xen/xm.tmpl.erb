@@ -22,7 +22,7 @@ memory      = '{$memory}'
 #  Disk device(s).
 #
 root        = '/dev/{$device}1 ro'
-{ if ( $noswap ) 
+{ if ( $noswap )
   {
         $OUT .= "disk        = [ '$image_vbd,$device" . "1,w' ]";
   }
@@ -47,12 +47,12 @@ name        = '{$hostname}'
     # Setup the mac address, if present.
     my $m = '';
     if ( $mac )
-    { 
+    {
       $m = "mac=$mac"
     }
 
     $OUT .= "vif         = [ '$m' ]";
-  }    
+  }
   else
   {
     #
@@ -60,11 +60,11 @@ name        = '{$hostname}'
     #
     my $m = '';
     if ( $mac )
-    { 
+    {
       $m = ",mac=$mac"
     }
 
-    $OUT .= "vif         = [ 'ip=$ip1"; 
+    $OUT .= "vif         = [ 'ip=$ip1";
     $OUT .= "$m' ]";
   }
 }
