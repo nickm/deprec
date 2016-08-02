@@ -1,6 +1,6 @@
 # =std.rb: Capistrano Standard Methods
 # Standard library of procedures and functions that you can use with Capistrano.
-# 
+#
 # ----
 # Copyright (c) 2007 Neil Wilson, Aldur Systems Ltd
 #
@@ -23,7 +23,7 @@ module Std
 
   begin
     # Use the Mmap class if it is available
-    # http://moulon.inra.fr/ruby/mmap.html    
+    # http://moulon.inra.fr/ruby/mmap.html
     require 'mmap'
     MMAP=true #:nodoc:
   rescue LoadError
@@ -60,14 +60,14 @@ module Std
   # +options+ are as for *put*
   #
   def su_put(data, destination, temporary_area='/tmp', options={})
-    temporary_area = File.join(temporary_area,"#{File.basename(destination)}-$CAPISTRANO:HOST$") 
+    temporary_area = File.join(temporary_area,"#{File.basename(destination)}-$CAPISTRANO:HOST$")
     put(data, temporary_area, options)
     send run_method, <<-CMD
       sh -c "install -m#{sprintf("%3o",options[:mode]||0755)} #{temporary_area} #{destination} &&
       rm -f #{temporary_area}"
     CMD
   end
-  
+
   # Copies the +file_pattern+, which is assumed to be a tar
   # file of some description (gzipped or plain), and unpacks it into
   # +destination+.
@@ -90,14 +90,14 @@ module Std
       end
     end
   end
-  
+
   # Wrap this around your task calls to catch the no servers error and
   # ignore it
-  #    
+  #
   #    std.ignore_no_servers_error do
   #      activate_mysql
   #    end
-  #    
+  #
   def ignore_no_servers_error (&block)
     begin
       yield
@@ -141,12 +141,12 @@ module Std
   # Return a relative path from the destination directory +from_str+
   # to the target file/directory +to_str+. Used to create relative
   # symbolic link paths.
-  def relative_path (from_str, to_str) 
+  def relative_path (from_str, to_str)
     require 'pathname'
     Pathname.new(to_str).relative_path_from(Pathname.new(from_str)).to_s
   end
 
-  # Run a ruby command file on the servers 
+  # Run a ruby command file on the servers
   #
   def ruby(cmd, options={}, &block)
     temp_name = random_string + ".rb"
@@ -185,7 +185,7 @@ module Std
   end
 
   # Render a template file and upload it to the servers
-  # 
+  #
   def put_template(template, destination, options={})
     if MMAP
       logger.debug "Using Memory Mapped File Upload"

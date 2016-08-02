@@ -1,13 +1,13 @@
-require 'rubygems' 
+require 'rubygems'
 
 SPEC = Gem::Specification.new do |s|
   s.name = 'deprec'
   s.version = '1.99.27'
-  
+
   s.authors = ['Mike Bailey']
   s.description = <<-EOF
-      This project provides libraries of Capistrano tasks and extensions to 
-      remove the repetative manual work associated with installing services 
+      This project provides libraries of Capistrano tasks and extensions to
+      remove the repetative manual work associated with installing services
       on linux servers.
   EOF
   s.email = 'mike@bailey.net.au'
@@ -17,10 +17,10 @@ SPEC = Gem::Specification.new do |s|
 
   s.require_paths = ['lib']
   s.add_dependency('capistrano', '> 2.0.0')
-  candidates = Dir.glob("{bin,docs,lib}/**/*") 
+  candidates = Dir.glob("{bin,docs,lib}/**/*")
   candidates.concat(%w(CHANGELOG COPYING LICENSE README THANKS))
-  s.files = candidates.delete_if do |item| 
-    item.include?("CVS") || item.include?("rdoc") 
+  s.files = candidates.delete_if do |item|
+    item.include?("CVS") || item.include?("rdoc")
   end
   s.default_executable = "depify"
   s.executables = ["depify"]

@@ -49,13 +49,13 @@ case "$1" in
   reload)
 	      echo -n "Reloading $DESC configuration: "
 	      start-stop-daemon --stop --signal HUP --quiet --pidfile /usr/local/nginx/logs/$NAME.pid \
-	          --exec $DAEMON 
+	          --exec $DAEMON
 	      echo "$NAME."
 	      ;;
 	  *)
 	        N=/etc/init.d/$NAME
 	        echo "Usage: $N {start|stop|restart|reload|force-reload}" >&2
-	        exit 1   
+	        exit 1
 	        ;;
 	esac
 

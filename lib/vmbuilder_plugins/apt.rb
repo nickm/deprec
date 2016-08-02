@@ -15,17 +15,17 @@ require 'capistrano'
 # Installs within Capistrano as the plugin _apt_.
 #
 # =Usage
-#    
+#
 #    require 'vmbuilder_plugins/apt'
 #
 # Prefix all calls to the library with <tt>apt.</tt>
 #
-module Apt 
+module Apt
 
   # Default apt-get command - reduces any interactivity to the minimum.
-  APT_GET="DEBCONF_TERSE='yes' DEBIAN_PRIORITY='critical' DEBIAN_FRONTEND=noninteractive apt-get" 
+  APT_GET="DEBCONF_TERSE='yes' DEBIAN_PRIORITY='critical' DEBIAN_FRONTEND=noninteractive apt-get"
 
-  # Run the apt install program across the package list in 'packages'. 
+  # Run the apt install program across the package list in 'packages'.
   # Select those packages referenced by <tt>:base</tt> and the +version+
   # of the distribution you want to use.
   def install(packages, version, options={})

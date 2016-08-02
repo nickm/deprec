@@ -1,14 +1,14 @@
 # Copyright 2006-2008 by Mike Bailey. All rights reserved.
-Capistrano::Configuration.instance(:must_exist).load do 
+Capistrano::Configuration.instance(:must_exist).load do
   namespace :deprec do
     namespace :network do
-            
-      set(:network_number_of_ports) { 
+
+      set(:network_number_of_ports) {
         Capistrano::CLI.ui.ask "Number of network ports" do |q|
           q.default = 1
-        end 
+        end
       }
-      
+
       set(:network_interfaces) {
         foo = {}
         network_number_of_ports.to_i.times do |port|
@@ -26,22 +26,22 @@ Capistrano::Configuration.instance(:must_exist).load do
         end
         foo
       }
-      set(:network_hostname) { 
+      set(:network_hostname) {
         Capistrano::CLI.ui.ask "hostname" do |q|
           # q.validate = /add hostname validation here/
-        end 
-      } 
-      set(:network_gateway) { 
+        end
+      }
+      set(:network_gateway) {
         Capistrano::CLI.ui.ask "default gateway" do |q|
           q.default = '192.168.1.1'
-        end 
+        end
       }
-      set(:network_dns_nameservers) { 
+      set(:network_dns_nameservers) {
         Capistrano::CLI.ui.ask "dns nameservers (separated by spaces)" do |q|
           q.default = '203.8.183.1 4.2.2.1'
-        end 
+        end
       }
-      
+
       SYSTEM_CONFIG_FILES[:network] = [
 
         {:template => "interfaces.erb",
@@ -58,9 +58,9 @@ Capistrano::Configuration.instance(:must_exist).load do
          :path => '/etc/hostname',
          :mode => 0644,
          :owner => 'root:root'}
-    
+
        ]
-       
+
       # XXX need to set the order for these as it breaks sudo currently
       desc "Update system networking configuration"
       task :config do
@@ -68,14 +68,14 @@ Capistrano::Configuration.instance(:must_exist).load do
           deprec2.render_template(:network, file.merge(:remote=>true))
         end
       end
-      
+
       desc "Restart network interface"
       task :restart do
         sudo '/etc/init.d/networking restart'
       end
-      
-      
+
+
     end
   end
-  
+
 end

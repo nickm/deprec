@@ -1,8 +1,8 @@
 # Copyright 2006-2008 by Mike Bailey. All rights reserved.
-Capistrano::Configuration.instance(:must_exist).load do 
-  namespace :deprec do 
+Capistrano::Configuration.instance(:must_exist).load do
+  namespace :deprec do
     namespace :gitosis do
-      
+
       # ref: http://scie.nti.st/2007/11/14/hosting-git-repositories-the-easy-and-secure-way
 
       set :gitosis_user, 'git'
@@ -30,10 +30,10 @@ Capistrano::Configuration.instance(:must_exist).load do
         run "grep '^#{gitosis_user}:' /etc/passwd || #{sudo} adduser --system --shell /bin/sh --gecos 'git version control' --group --disabled-password --home /home/#{gitosis_user} #{gitosis_user}"
         sudo "passwd --unlock #{gitosis_user}"
       end
-      
+
       task :init do
         sudo "sudo -H -u #{git_user} gitosis-init < ~/.ssh/authorized_keys"
-        sudo "chmod 0755 /home/git/repositories/gitosis-admin.git/hooks/post-update" 
+        sudo "chmod 0755 /home/git/repositories/gitosis-admin.git/hooks/post-update"
         puts
         puts "Now check out the gitosis-admin repos, edit configs and push changes back"
         puts "Your changes with update gitosis as soon as they are checked in."
@@ -43,6 +43,6 @@ Capistrano::Configuration.instance(:must_exist).load do
         puts ""
       end
 
-    end 
+    end
   end
 end

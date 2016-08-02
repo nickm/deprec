@@ -27,7 +27,7 @@ server {
                 }
                 if (-f $request_filename.html) {
                         rewrite (.*) $1.html break;
-                }       
+                }
                 if (!-f $request_filename) {
                         proxy_pass http://<%= application %>;
                         break;

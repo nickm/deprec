@@ -14,7 +14,7 @@ set _tilde 0
 #
 ############# end config ##############
 
-<% Array(apt_releases_to_mirror).each do |release| %> 
+<% Array(apt_releases_to_mirror).each do |release| %>
 # <%= release %>
 deb http://archive.ubuntu.com/ubuntu <%= release %> main restricted universe multiverse
 deb http://archive.ubuntu.com/ubuntu <%= release %>-updates main restricted universe multiverse
